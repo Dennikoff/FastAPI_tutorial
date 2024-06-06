@@ -1,10 +1,19 @@
 from datetime import datetime
 from enum import Enum
 from typing import List, Optional
-from fastapi import FastAPI
-from pydantic import BaseModel, Field
+from fastapi import FastAPI, Request, status
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field, ValidationError
 
 app = FastAPI(title="Trading App")
+
+@app.exception_handler(ValidationError)
+async def validation_exception_handler(request: Request, exc: ValidationError):
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content=jsonable_encoder({"detail": exc.errors()})
+    )
 
 users = [
     {"id": 1, "name": "Alex", "degree": [

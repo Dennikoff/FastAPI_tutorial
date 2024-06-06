@@ -26,5 +26,14 @@ trades = [
 ]
 
 @app.get("/trades")
-def get_trades(limit: int, offset: int):
+def get_trades(limit: int = 10, offset: int = 0):
     return trades[offset:][:limit]
+
+@app.patch("/users/{user_id}")
+def change_user_name(user_id: int, name:str):
+    for user in users:
+        if user.get("id") == user_id:
+            user["name"] = name
+            return user
+    print(users)
+    return "404"

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 app = FastAPI(title="Trading App")
 
@@ -37,3 +38,13 @@ def change_user_name(user_id: int, name:str):
             return user
     print(users)
     return "404"
+
+class Trade(BaseModel):
+    id: int
+    user_id: int
+    amount: int
+
+@app.post("/trade")
+def add_trade(trade: Trade):
+    trades.append(trade)
+    return {"data": trades}
